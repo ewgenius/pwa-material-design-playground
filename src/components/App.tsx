@@ -8,7 +8,7 @@ export default class App extends Component<{}, {}> {
   render() {
     return <Flex className='app'>
       <AppBar title='Yopta'/>
-      <Flex flow='column'>
+      <Flex flow='column' width={800} alignSelf='center'>
         <Scroller vertical>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i =>
             <Card key={i} style={{ margin: 8 }}>
