@@ -1,0 +1,16 @@
+{
+  "name": "Yopta",
+  "short_name": "Yopta",
+  "description": "Yopta services app",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "icons": [
+    {
+      "src": "/assets/icon.png",
+      "sizes": "300x300",
+      "type": "image/png"
+    }
+  ]
+}
