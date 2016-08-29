@@ -20,14 +20,6 @@ gulp.task('assets', () => {
     .pipe(gulp.dest(`./build/assets`))
 })
 
-gulp.task('client:compile', cb => {
-  webpack(webpackConfigProd, (err, stats) => {
-    if (err) throw new util.PluginError('webpack', err)
-    util.log('[webpack]', stats.toString())
-    cb()
-  })
-})
-
 gulp.task('webpack', cb => {
   webpack(webpackConfigProd, (err, stats) => {
     if (err) throw new util.PluginError('webpack', err)
@@ -54,3 +46,5 @@ gulp.task('serve', () => {
 })
 
 gulp.task('default', ['copy', 'assets', 'serve'])
+
+gulp.task('bundle', ['copy', 'assets', 'webpack'])
