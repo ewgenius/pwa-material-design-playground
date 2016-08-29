@@ -18,7 +18,7 @@ const Flex = (props: FlexProps) => <div style={{
   alignItems: props.alignItems || 'initial',
   alignContent: props.alignContent || 'initial',
   alignSelf: props.alignSelf || 'initial',
-  width: props.width
+  maxWidth: props.width
 }}>
   {props.children}
 </div>
