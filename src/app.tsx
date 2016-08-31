@@ -1,16 +1,18 @@
 import * as React from 'react'
 import {render} from 'react-dom'
-import * as configure from 'react-tap-event-plugin'
+import * as configureTapEvent from 'react-tap-event-plugin'
+import {createStore, applyMiddleware} from 'redux'
 import {Provider} from 'react-redux'
-import {Router, Route, hashHistory} from 'react-router'
+import thunkMiddleware from 'redux-thunk'
+import * as createLogger from 'redux-logger'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 import {FirebaseService} from './lib/firebase.ts'
+import reducer from './store.ts'
 import './styles/main.scss'
 
-import HomeView from './containers/views/HomeView.tsx'
-import LoginView from './containers/views/LoginView.tsx'
+import routes from './routes.tsx'
 
-configure()
+configureTapEvent()
 
 const container = document.querySelector('#root')
 const theme = getMuiTheme({
@@ -34,13 +36,21 @@ const firebase = new FirebaseService({
   storageBucket: "yopta-7b8c0.appspot.com",
 })
 
-if (!firebase.currentUser) firebase.sigIn()
+const loggerMiddleware = createLogger({ collapsed: true })
+const firebaseMiddleware = firebase.middleware
 
-render(<Provider>
+const store = createStore(reducer, applyMiddleware(
+  firebaseMiddleware,
+  loggerMiddleware,
+  thunkMiddleware
+))
+
+store.dispatch({
+  type: 'INITIALIZE'
+})
+
+render(<Provider store={store}>
   <MuiThemeProvider muiTheme={theme}>
-    <Router history={hashHistory}>
-      <Route path='/' component={HomeView}/>
-      <Route path='/login' component={LoginView}/>
-    </Router>
+    {routes}
   </MuiThemeProvider>
 </Provider>, container)
