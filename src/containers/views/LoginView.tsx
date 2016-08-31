@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Component} from 'react'
-import {AppBar} from 'material-ui'
+import {AppBar, FloatingActionButton} from 'material-ui'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 import HeaderLayout from '../../components/Layout/HeaderLayout.tsx'
 
 export default class App extends Component<{}, {}> {
@@ -9,7 +10,15 @@ export default class App extends Component<{}, {}> {
       appBar={
         <AppBar title='login'/>
       }>
-      test
+      <FloatingActionButton
+        secondary={true}
+        style={{
+          position: 'fixed',
+          right: 16,
+          bottom: 16
+        }}>
+        <ContentAdd />
+      </FloatingActionButton>
     </HeaderLayout>
   }
 }

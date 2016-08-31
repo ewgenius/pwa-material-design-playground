@@ -4,8 +4,8 @@
   "description": "Yopta services app",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#fff",
-  "background_color": "#fff",
+  "theme_color": "#FFCA28",
+  "background_color": "#FFCA28",
   "icons": [
     {
       "src": "/assets/icon.png",
