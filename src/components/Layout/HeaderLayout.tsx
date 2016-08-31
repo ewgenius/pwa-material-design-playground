@@ -12,7 +12,7 @@ interface HeaderLayoutProps {
 export default class HeaderLayout extends Component<HeaderLayoutProps, {}> {
   render() {
     return <Flex className={this.props.className}>
-      {this.props.appBar || <AppBar title='appbar'/>}
+      {this.props.appBar}
       <Flex flow='column'>
         {this.props.children}
       </Flex>
