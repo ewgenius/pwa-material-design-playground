@@ -11,13 +11,13 @@ gulp.task('copy', () => {
   return gulp.src([
     `./index.html`,
     './manifest.json'
-    ])
-    .pipe(gulp.dest('./build'))
+  ])
+    .pipe(gulp.dest('./dist'))
 })
 
 gulp.task('assets', () => {
-  return gulp.src('./assets/**/*.png')
-    .pipe(gulp.dest(`./build/assets`))
+  return gulp.src(['./assets/**/*.png', './assets/**/*.ico',])
+    .pipe(gulp.dest(`./dist/assets`))
 })
 
 gulp.task('webpack', cb => {
@@ -32,7 +32,7 @@ gulp.task('serve', () => {
   const compiler = webpack(webpackConfigDev)
 
   const server = new WebpackDevServer(compiler, {
-    contentBase: './build',
+    contentBase: './dist',
     hot: true,
     stats: {
       colors: true
@@ -45,6 +45,6 @@ gulp.task('serve', () => {
   })
 })
 
-gulp.task('default', ['copy', 'assets', 'serve'])
+gulp.task('default', ['assets', 'copy', 'assets', 'serve'])
 
-gulp.task('bundle', ['copy', 'assets', 'webpack'])
+gulp.task('bundle', ['assets', 'copy', 'assets', 'webpack'])

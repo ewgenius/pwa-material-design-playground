@@ -5,6 +5,7 @@ import {MuiThemeProvider, getMuiTheme} from 'material-ui/styles'
 import './styles/main.scss'
 
 import App from './components/App.tsx'
+import LoginView from './containers/views/LoginView.tsx'
 
 configure()
 
@@ -16,5 +17,5 @@ const theme = getMuiTheme({
 })
 
 render(<MuiThemeProvider muiTheme={theme}>
-  <App />
+  <LoginView />
 </MuiThemeProvider>, container)
