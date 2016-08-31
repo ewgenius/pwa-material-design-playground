@@ -1,7 +1,8 @@
 import * as React from 'react'
 import {render} from 'react-dom'
 import * as configureTapEvent from 'react-tap-event-plugin'
-import {createStore, applyMiddleware} from 'redux'
+import {combineReducers, createStore, applyMiddleware} from 'redux'
+import {routerReducer} from 'react-router-redux'
 import {Provider} from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as createLogger from 'redux-logger'
@@ -10,7 +11,7 @@ import {FirebaseService} from './lib/firebase.ts'
 import reducer from './store.ts'
 import './styles/main.scss'
 
-import routes from './routes.tsx'
+import createRoutes from './routes.tsx'
 
 configureTapEvent()
 
@@ -39,7 +40,10 @@ const firebase = new FirebaseService({
 const loggerMiddleware = createLogger({ collapsed: true })
 const firebaseMiddleware = firebase.middleware
 
-const store = createStore(reducer, applyMiddleware(
+const store = createStore(combineReducers({
+  store: reducer,
+  routing: routerReducer
+}), applyMiddleware(
   firebaseMiddleware,
   loggerMiddleware,
   thunkMiddleware
@@ -48,6 +52,8 @@ const store = createStore(reducer, applyMiddleware(
 store.dispatch({
   type: 'INITIALIZE'
 })
+
+const routes = createRoutes(store)
 
 render(<Provider store={store}>
   <MuiThemeProvider muiTheme={theme}>
