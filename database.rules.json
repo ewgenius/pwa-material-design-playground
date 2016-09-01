@@ -13,7 +13,26 @@
     "services": {
       ".read": true,
       ".write": false,
+      
       "$service_id": {
+        ".read": "data.child('active').val() === true || data.child('user').val() === auth.uid",
+        ".write": "!data.exists() || data.exists() && data.child('user').val() === auth.uid",
+        
+        ".indexOn": ["name", "user", "category"],
+
+        "user": { ".validate": "newData.val() === auth.uid" },
+        "name": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
+        "description": { ".validate": "newData.isString()" },
+        "active": { ".validate": "newData.isBoolean()" },
+        "created": { ".validate": "!data.exists() && newData.val() <= now" },
+        "$other": { ".validate": false }
+      }
+    },
+    "orders": {
+      ".read": true,
+      ".write": false,
+      
+      "$order_id": {
         ".read": "data.child('active').val() === true || data.child('user').val() === auth.uid",
         ".write": "!data.exists() || data.exists() && data.child('user').val() === auth.uid",
         
