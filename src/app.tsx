@@ -7,7 +7,7 @@ import {Provider} from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as createLogger from 'redux-logger'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
-import {FirebaseService, FIREBASE_ACTION} from './lib/firebase.ts'
+import {FirebaseService, FIREBASE_DATABASE_ACTION, FIREBASE_AUTH_ACTION} from './lib/firebase.ts'
 import * as Firebase from 'firebase'
 import reducer from './store.ts'
 import './styles/main.scss'
@@ -38,8 +38,6 @@ const firebase = new FirebaseService({
   storageBucket: "yopta-7b8c0.appspot.com",
 })
 
-firebase.sigIn()
-
 const loggerMiddleware = createLogger({ collapsed: true })
 const firebaseMiddleware = firebase.middleware
 
@@ -52,13 +50,21 @@ const store = createStore(combineReducers({
   thunkMiddleware
 ))
 
+store.dispatch({
+  type: 'SIGN_IN',
+  [FIREBASE_AUTH_ACTION]: {
+    successType: 'SIGNED_IN',
+    errorType: 'SIGN_IN_ERROR'
+  }
+})
+
 firebase.onSignIn = user => {
-  console.log(user)
   if (firebase.currentUser)
     firebase.list('/categories').then((categories: any[]) => {
       const category = categories[0]
-      store.dispatch(() => ({
-        [FIREBASE_ACTION]: {
+      store.dispatch({
+        type: 'CREATE_ORDER',
+        [FIREBASE_DATABASE_ACTION]: {
           path: '/orders',
           method: 'push',
           value: {
@@ -72,7 +78,7 @@ firebase.onSignIn = user => {
           successType: 'ORDER_CREATE_SUCCESS',
           errorType: 'ORDER_CREATED_ERROR',
         }
-      }))
+      })
     })
 }
 

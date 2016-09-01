@@ -8,12 +8,18 @@ import {
 } from 'firebase'
 import {Middleware} from 'redux'
 
-export const FIREBASE_ACTION = 'FIREBASE_ACTION'
+export const FIREBASE_DATABASE_ACTION = 'FIREBASE_DATABASE_ACTION'
+export const FIREBASE_AUTH_ACTION = 'FIREBASE_AUTH_ACTION'
 
-export interface FirebaseAction {
+export interface FirebaseDatabaseAction {
   path: string
   type: string
   value?: any
+  successType: string
+  errorType: string
+}
+
+export interface FirebaseAuthAction {
   successType: string
   errorType: string
 }
@@ -36,12 +42,11 @@ export class FirebaseService {
 
   get middleware(): Middleware {
     return store => next => action => {
-      const firebaseAction: FirebaseAction = action[FIREBASE_ACTION]
+      const firebaseDatabaseAction: FirebaseDatabaseAction = action[FIREBASE_DATABASE_ACTION]
+      const firebaseAuthAction:FirebaseAuthAction = action[FIREBASE_AUTH_ACTION]
 
-      if (!firebaseAction)
-        return next(action)
-      else {
-        const {path, type, value, successType, errorType} = firebaseAction
+      if (firebaseDatabaseAction) {
+        const {path, type, value, successType, errorType} = firebaseDatabaseAction
         return Promise.resolve()
           .then(() => {
             switch (type) {
@@ -61,7 +66,10 @@ export class FirebaseService {
             type: errorType,
             error
           }))
-      }
+      } else if (firebaseAuthAction) {
+        const {successType, errorType} = firebaseAuthAction
+        return this.sigIn()
+      } else return next(action)
     }
   }
 
@@ -77,6 +85,7 @@ export class FirebaseService {
     this._firebase.auth().getRedirectResult().then(result => {
       if (result.user) {
         this._onSignIn(result.user)
+        return result.user
       } else {
         return this._firebase.auth().signInWithRedirect(this._authProvider)
       }
