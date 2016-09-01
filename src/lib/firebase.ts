@@ -4,7 +4,8 @@ import {
   FirebaseConfig,
   FirebaseApplication,
   Database,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  User
 } from 'firebase'
 import {Middleware} from 'redux'
 
@@ -28,7 +29,6 @@ export class FirebaseService {
   private _firebase: FirebaseApplication
   private _database: Database
   private _authProvider: GoogleAuthProvider
-  private _onSignIn: (any) => any = () => { }
 
   constructor(config: FirebaseConfig) {
     this._firebase = initializeApp(config)
@@ -43,7 +43,7 @@ export class FirebaseService {
   get middleware(): Middleware {
     return store => next => action => {
       const firebaseDatabaseAction: FirebaseDatabaseAction = action[FIREBASE_DATABASE_ACTION]
-      const firebaseAuthAction:FirebaseAuthAction = action[FIREBASE_AUTH_ACTION]
+      const firebaseAuthAction: FirebaseAuthAction = action[FIREBASE_AUTH_ACTION]
 
       if (firebaseDatabaseAction) {
         const {path, type, value, successType, errorType} = firebaseDatabaseAction
@@ -69,6 +69,18 @@ export class FirebaseService {
       } else if (firebaseAuthAction) {
         const {successType, errorType} = firebaseAuthAction
         return this.sigIn()
+          .then(user => {
+            next({
+              type: successType,
+              user
+            })
+          })
+          .catch(error => {
+            next({
+              type: errorType,
+              error
+            })
+          })
       } else return next(action)
     }
   }
@@ -77,14 +89,10 @@ export class FirebaseService {
     return this._database
   }
 
-  set onSignIn(handler) {
-    this._onSignIn = handler
-  }
-
-  sigIn() {
-    this._firebase.auth().getRedirectResult().then(result => {
+  sigIn(): Promise<User> {
+    return this._firebase.auth().getRedirectResult().then(result => {
+      console.log(result)
       if (result.user) {
-        this._onSignIn(result.user)
         return result.user
       } else {
         return this._firebase.auth().signInWithRedirect(this._authProvider)

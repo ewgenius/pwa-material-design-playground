@@ -50,16 +50,16 @@ const store = createStore(combineReducers({
   thunkMiddleware
 ))
 
-store.dispatch({
+/*store.dispatch({
   type: 'SIGN_IN',
   [FIREBASE_AUTH_ACTION]: {
     successType: 'SIGNED_IN',
     errorType: 'SIGN_IN_ERROR'
   }
-})
+})*/
 
-firebase.onSignIn = user => {
-  if (firebase.currentUser)
+//firebase.onSignIn = user => {
+  /*if (firebase.currentUser)
     firebase.list('/categories').then((categories: any[]) => {
       const category = categories[0]
       store.dispatch({
@@ -79,8 +79,8 @@ firebase.onSignIn = user => {
           errorType: 'ORDER_CREATED_ERROR',
         }
       })
-    })
-}
+    })*/
+//}
 
 const routes = createRoutes(store)
 

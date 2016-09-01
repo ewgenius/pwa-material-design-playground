@@ -39,7 +39,7 @@ gulp.task('serve', () => {
     }
   })
 
-  server.listen(8080, 'localhost', err => {
+  server.listen(8081, 'localhost', err => {
     if (err) throw new util.PluginError('webpack-dev-server', err)
     util.log('[webpack-dev-server]', 'http://localhost:8080')
   })
