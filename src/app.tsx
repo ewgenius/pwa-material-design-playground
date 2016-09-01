@@ -8,6 +8,7 @@ import thunkMiddleware from 'redux-thunk'
 import * as createLogger from 'redux-logger'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 import {FirebaseService} from './lib/firebase.ts'
+import * as Firebase from 'firebase'
 import reducer from './store.ts'
 import './styles/main.scss'
 
@@ -36,6 +37,23 @@ const firebase = new FirebaseService({
   databaseURL: "https://yopta-7b8c0.firebaseio.com",
   storageBucket: "yopta-7b8c0.appspot.com",
 })
+
+firebase.sigIn()
+firebase.onSignIn = user => {
+  console.log(user)
+  if (firebase.currentUser)
+    firebase.list('/categories').then((categories: any[]) => {
+      const category = categories[0]
+      firebase.push('/services', {
+        name: 'test service',
+        user: firebase.currentUser.uid,
+        category: category.id,
+        description: 'test service description',
+        active: true,
+        created: Firebase.database.ServerValue.TIMESTAMP
+      }).then(r => console.log(r))
+    })
+}
 
 const loggerMiddleware = createLogger({ collapsed: true })
 const firebaseMiddleware = firebase.middleware
