@@ -10,11 +10,19 @@ import {Middleware} from 'redux'
 
 export const FIREBASE_ACTION = 'FIREBASE_ACTION'
 
+export interface FirebaseAction {
+  path: string
+  type: string
+  value?: any
+  successType: string
+  errorType: string
+}
+
 export class FirebaseService {
   private _firebase: FirebaseApplication
   private _database: Database
   private _authProvider: GoogleAuthProvider
-  private _onSignIn: (any) => any = () => {}
+  private _onSignIn: (any) => any = () => { }
 
   constructor(config: FirebaseConfig) {
     this._firebase = initializeApp(config)
@@ -28,11 +36,36 @@ export class FirebaseService {
 
   get middleware(): Middleware {
     return store => next => action => {
-      next(action)
+      const firebaseAction: FirebaseAction = action[FIREBASE_ACTION]
+
+      if (!firebaseAction)
+        return next(action)
+      else {
+        const {path, type, value, successType, errorType} = firebaseAction
+        return Promise.resolve()
+          .then(() => {
+            switch (type) {
+              case 'push':
+                return this.push(path, value)
+              case 'update':
+                return this.update(path, value)
+              case 'remove':
+                return this.remove(path)
+            }
+          })
+          .then(result => next({
+            type: successType,
+            result
+          }))
+          .catch(error => next({
+            type: errorType,
+            error
+          }))
+      }
     }
   }
 
-  get database():Database {
+  get database(): Database {
     return this._database
   }
 
@@ -71,7 +104,7 @@ export class FirebaseService {
       .push(value)
   }
 
-  put(path: string, value: any) {
+  update(path: string, value: any) {
     return this._database
       .ref(path)
       .update(value)

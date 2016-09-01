@@ -7,7 +7,7 @@ import {Provider} from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as createLogger from 'redux-logger'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
-import {FirebaseService} from './lib/firebase.ts'
+import {FirebaseService, FIREBASE_ACTION} from './lib/firebase.ts'
 import * as Firebase from 'firebase'
 import reducer from './store.ts'
 import './styles/main.scss'
@@ -39,21 +39,6 @@ const firebase = new FirebaseService({
 })
 
 firebase.sigIn()
-firebase.onSignIn = user => {
-  console.log(user)
-  if (firebase.currentUser)
-    firebase.list('/categories').then((categories: any[]) => {
-      const category = categories[0]
-      firebase.push('/orders', {
-        name: 'test order',
-        user: firebase.currentUser.uid,
-        category: category.id,
-        description: 'test order description',
-        active: true,
-        created: Firebase.database.ServerValue.TIMESTAMP
-      }).then(r => console.log(r))
-    })
-}
 
 const loggerMiddleware = createLogger({ collapsed: true })
 const firebaseMiddleware = firebase.middleware
@@ -67,9 +52,29 @@ const store = createStore(combineReducers({
   thunkMiddleware
 ))
 
-store.dispatch({
-  type: 'INITIALIZE'
-})
+firebase.onSignIn = user => {
+  console.log(user)
+  if (firebase.currentUser)
+    firebase.list('/categories').then((categories: any[]) => {
+      const category = categories[0]
+      store.dispatch(() => ({
+        [FIREBASE_ACTION]: {
+          path: '/orders',
+          method: 'push',
+          value: {
+            name: 'test order',
+            user: firebase.currentUser.uid,
+            category: category.id,
+            description: 'test order description',
+            active: true,
+            created: Firebase.database.ServerValue.TIMESTAMP
+          },
+          successType: 'ORDER_CREATE_SUCCESS',
+          errorType: 'ORDER_CREATED_ERROR',
+        }
+      }))
+    })
+}
 
 const routes = createRoutes(store)
 
