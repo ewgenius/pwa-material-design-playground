@@ -44,11 +44,11 @@ firebase.onSignIn = user => {
   if (firebase.currentUser)
     firebase.list('/categories').then((categories: any[]) => {
       const category = categories[0]
-      firebase.push('/services', {
-        name: 'test service',
+      firebase.push('/orders', {
+        name: 'test order',
         user: firebase.currentUser.uid,
         category: category.id,
-        description: 'test service description',
+        description: 'test order description',
         active: true,
         created: Firebase.database.ServerValue.TIMESTAMP
       }).then(r => console.log(r))
