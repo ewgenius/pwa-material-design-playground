@@ -2,7 +2,8 @@ import * as React from 'react'
 import {render} from 'react-dom'
 import * as configureTapEvent from 'react-tap-event-plugin'
 import {combineReducers, createStore, applyMiddleware} from 'redux'
-import {routerReducer} from 'react-router-redux'
+import {hashHistory} from 'react-router'
+import {routerReducer, routerMiddleware} from 'react-router-redux'
 import {Provider} from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as createLogger from 'redux-logger'
@@ -46,6 +47,7 @@ const store = createStore(combineReducers({
   store: reducer,
   routing: routerReducer
 }), applyMiddleware(
+  routerMiddleware(hashHistory),
   firebaseMiddleware,
   loggerMiddleware,
   thunkMiddleware
