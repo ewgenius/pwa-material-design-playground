@@ -7,32 +7,43 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import Flex from '../../components/Layout/Flex.tsx'
 import {User} from 'firebase'
 import {AppState} from '../../store.ts'
-import {signIn} from '../../actions/auth.ts'
+import {signIn, signOut} from '../../actions/auth.ts'
 
-function mapProps(state: AppState) {
+function mapProps(state: { store: AppState }) {
   return {
-    user: state.user
+    user: state.store.user
   }
 }
 
-class LoginView extends Component<{
+interface LoginViewProps {
   user: User,
   dispatch: Dispatch<any>
-}, {}> {
+}
+
+class LoginView extends Component<LoginViewProps, {}> {
   signIn() {
     this.props.dispatch(signIn())
+  }
+
+  signOut() {
+    this.props.dispatch(signOut())
   }
 
   render() {
     const {user} = this.props
 
-    return <Flex alignItems='center'>
-      <Flex flow='row' alignItems='center'>
-        {user ? user.displayName : null}
-      </Flex>
-      <Flex flow='row' alignItems='center'>
-        <RaisedButton label='SIGN IN' onTouchTap={() => this.signIn() }/>
-      </Flex>
+    return <Flex flow='row' alignItems='center'>
+
+      {user ?
+        <Flex flow='column' alignItems='center'>
+          <img src={user.providerData[0].photoURL}/>
+          <RaisedButton label='SIGN OUT' onTouchTap={() => this.signOut() }/>
+        </Flex>
+        :
+        <Flex flow='column' alignItems='center'>
+          <RaisedButton label='SIGN IN' onTouchTap={() => this.signIn() }/>
+        </Flex>
+      }
     </Flex>
   }
 }

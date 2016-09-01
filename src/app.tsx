@@ -9,6 +9,7 @@ import * as createLogger from 'redux-logger'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 import {FirebaseService, FIREBASE_DATABASE_ACTION, FIREBASE_AUTH_ACTION} from './lib/firebase.ts'
 import * as Firebase from 'firebase'
+import {SIGN_IN_SUCCESS} from './actions/auth.ts'
 import reducer from './store.ts'
 import './styles/main.scss'
 
@@ -50,13 +51,10 @@ const store = createStore(combineReducers({
   thunkMiddleware
 ))
 
-/*store.dispatch({
-  type: 'SIGN_IN',
-  [FIREBASE_AUTH_ACTION]: {
-    successType: 'SIGNED_IN',
-    errorType: 'SIGN_IN_ERROR'
-  }
-})*/
+firebase.authStateHanler = user => store.dispatch({
+  type: SIGN_IN_SUCCESS,
+  user
+})
 
 //firebase.onSignIn = user => {
   /*if (firebase.currentUser)

@@ -21,6 +21,7 @@ export interface FirebaseDatabaseAction {
 }
 
 export interface FirebaseAuthAction {
+  action: string
   successType: string
   errorType: string
 }
@@ -67,12 +68,20 @@ export class FirebaseService {
             error
           }))
       } else if (firebaseAuthAction) {
-        const {successType, errorType} = firebaseAuthAction
-        return this.sigIn()
-          .then(user => {
+        const {action, successType, errorType} = firebaseAuthAction
+        return Promise.resolve()
+          .then(() => {
+            switch (action) {
+              case 'signIn':
+                return this.sigIn()
+              case 'signOut':
+                return this.signOut()
+            }
+          })
+          .then(result => {
             next({
               type: successType,
-              user
+              result
             })
           })
           .catch(error => {
@@ -89,6 +98,10 @@ export class FirebaseService {
     return this._database
   }
 
+  set authStateHanler(handler) {
+    this._firebase.auth().onAuthStateChanged(handler)
+  }
+
   sigIn(): Promise<User> {
     return this._firebase.auth().getRedirectResult().then(result => {
       console.log(result)
@@ -98,6 +111,10 @@ export class FirebaseService {
         return this._firebase.auth().signInWithRedirect(this._authProvider)
       }
     })
+  }
+
+  signOut(): Promise<any>  {
+    return this._firebase.auth().signOut()
   }
 
   list(path: string, limit: number = 10) {
