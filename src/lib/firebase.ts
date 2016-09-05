@@ -35,6 +35,8 @@ export class FirebaseService {
     this._firebase = initializeApp(config)
     this._database = this._firebase.database()
     this._authProvider = new (Firebase as any).auth.GoogleAuthProvider()
+
+    window['_firebase'] = this._firebase
   }
 
   get currentUser() {
@@ -51,6 +53,8 @@ export class FirebaseService {
         return Promise.resolve()
           .then(() => {
             switch (type) {
+              case 'list':
+                return this.list(path) as any
               case 'push':
                 return this.push(path, value)
               case 'update':

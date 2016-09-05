@@ -44,6 +44,20 @@
         "active": { ".validate": "newData.isBoolean()" },
         "created": { ".validate": "!data.exists() && newData.val() <= now" }
       }
+    },
+
+    "comments": {
+      ".read": true,
+      ".write": false,
+
+      "$comment_id": {
+        ".read": true,
+        ".write": true,
+
+        "user": { ".validate": "newData.val() === auth.uid" },
+        "message": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
+        "created": { ".validate": "!data.exists() && newData.val() <= now" }
+      }
     }
   }
 }
