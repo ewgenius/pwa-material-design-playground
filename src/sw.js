@@ -1,4 +1,4 @@
-const swVersion = '0.1'
+const staticCacheVersion = '0.2'
 
 self.addEventListener('install', event => {
   

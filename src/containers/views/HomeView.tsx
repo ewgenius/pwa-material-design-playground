@@ -3,24 +3,26 @@ import {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {push} from 'react-router-redux'
+import {showSidebar} from '../../actions/ui.ts'
+
 
 import {AppBar, FloatingActionButton} from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import HeaderLayout from '../../components/Layout/HeaderLayout.tsx'
 import Scroller from '../../components/Layout/Scroller.tsx'
 
-class HomeView extends Component<{dispatch: any}, {}> {
+class HomeView extends Component<{ dispatch: any }, {}> {
   render() {
-    const appBar = <AppBar title='yopta'/>
+    const appBar = <AppBar onLeftIconButtonTouchTap={() => this.props.dispatch(showSidebar()) } title='yopta'/>
 
     return <HeaderLayout
       appBar={appBar}>
 
       <Scroller>
-        
+
       </Scroller>
 
-      <FloatingActionButton onTouchTap={() => this.props.dispatch(push('/login'))}
+      <FloatingActionButton onTouchTap={() => this.props.dispatch(push('/login')) }
         secondary={true}
         style={{
           position: 'fixed',

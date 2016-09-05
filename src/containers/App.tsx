@@ -7,12 +7,15 @@ import {User} from 'firebase'
 import {AppState, AppUi} from '../store.ts'
 import {hidePrompt} from '../actions/ui.ts'
 
+import {showSidebar, hideSidebar} from '../actions/ui.ts'
+
 import Flex from '../components/Layout/Flex.tsx'
-import {Snackbar} from 'material-ui'
+import {Snackbar, Drawer, MenuItem} from 'material-ui'
 
 function mapProps(state: { store: AppState }) {
   return {
     user: state.store.user,
+    showSidebar: state.store.ui.showSidebar,
     showPrompt: state.store.ui.showPrompt,
     promptMessage: state.store.ui.promptMessage,
     promptAction: state.store.ui.promptAction,
@@ -22,6 +25,7 @@ function mapProps(state: { store: AppState }) {
 
 interface AppProps {
   user: User
+  showSidebar: boolean
   showPrompt: boolean
   promptMessage: string
   promptAction: string
@@ -34,10 +38,28 @@ class App extends Component<AppProps, {}> {
     this.props.dispatch(hidePrompt())
   }
 
+  toggleSidebar(open) {
+    this.props.dispatch(open ? showSidebar() : hideSidebar())
+  }
+
+  navigateTo(path) {
+    this.props.dispatch(push(path))
+    this.toggleSidebar(false)
+  }
+
   render() {
-    const {showPrompt, promptMessage, promptAction, promptHandler} = this.props
+    const {showSidebar, showPrompt, promptMessage, promptAction, promptHandler} = this.props
 
     return <Flex>
+      <Drawer
+        open={showSidebar}
+        docked={false}
+        onRequestChange={open => this.toggleSidebar(open) }
+        >
+        <MenuItem onTouchTap={() => this.navigateTo('/settings')}>settings</MenuItem>
+        <MenuItem onTouchTap={() => location.reload()}>reload</MenuItem>
+      </Drawer>
+
       {this.props.children}
 
       <Snackbar

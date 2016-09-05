@@ -9,7 +9,9 @@ import {
 } from './actions/auth.ts'
 import {
   SHOW_PROMPT,
-  HIDE_PROMPT
+  HIDE_PROMPT,
+  SHOW_SIDEBAR,
+  HIDE_SIDEBAR
 } from './actions/ui.ts'
 
 export interface AppSettings {
@@ -17,6 +19,7 @@ export interface AppSettings {
 }
 
 export interface AppUi {
+  showSidebar: boolean,
   showPrompt: boolean,
   promptMessage: string
   promptAction: string
@@ -33,6 +36,7 @@ const appState: AppState = {
   user: null,
   settings: {},
   ui: {
+    showSidebar: false,
     showPrompt: false,
     promptMessage: '',
     promptAction: '',
@@ -42,6 +46,7 @@ const appState: AppState = {
 
 const lensUser = R.lensProp('user')
 const lensUi = R.lensProp('ui')
+const lensUiShowSidebar = R.compose(lensUi, R.lensProp('showSidebar')) as R.Lens
 const lensUiShowPrompt = R.compose(lensUi, R.lensProp('showPrompt')) as R.Lens
 const lensUiPromptMessage = R.compose(lensUi, R.lensProp('promptMessage')) as R.Lens
 const lensUiPromptHandler = R.compose(lensUi, R.lensProp('promptHandler')) as R.Lens
@@ -56,6 +61,11 @@ export default (state: AppState = appState, action: any) => {
             R.set(lensUiPromptMessage, action.message, state))))
     case HIDE_PROMPT:
       return R.set(lensUiShowPrompt, false, state)
+    case SHOW_SIDEBAR:
+      return R.set(lensUiShowSidebar, true, state)
+    case HIDE_SIDEBAR:
+      return R.set(lensUiShowSidebar, false, state)
+
     case SIGN_OUT:
       return R.set(lensUser, null, state)
     case SIGN_IN_SUCCESS:
