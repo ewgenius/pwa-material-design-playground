@@ -7,7 +7,6 @@ import {routerReducer, routerMiddleware} from 'react-router-redux'
 import {Provider} from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 import * as createLogger from 'redux-logger'
-import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 import {FirebaseService, FIREBASE_DATABASE_ACTION, FIREBASE_AUTH_ACTION} from './lib/firebase.ts'
 import * as Firebase from 'firebase'
 import reducer from './store.ts'
@@ -21,19 +20,6 @@ import createRoutes from './routes.tsx'
 configureTapEvent()
 
 const container = document.querySelector('#root')
-const theme = getMuiTheme({
-  palette: {
-    primary1Color: colors.amber500,
-    primary2Color: colors.amber500,
-    primary3Color: colors.amber500,
-    accent1Color: colors.deepOrangeA400,
-    accent2Color: colors.deepOrangeA400,
-    accent3Color: colors.deepOrangeA400
-  },
-  appBar: {
-    height: 56
-  }
-})
 
 const firebase = new FirebaseService({
   apiKey: "AIzaSyDITQSs7-VAgODZc9EwCP02MJnLIjQzgy4",
@@ -45,20 +31,31 @@ const firebase = new FirebaseService({
 const loggerMiddleware = createLogger({ collapsed: true })
 const firebaseMiddleware = firebase.middleware
 
-const store = createStore(combineReducers({
-  store: reducer,
-  routing: routerReducer
-}), applyMiddleware(
+declare const process: any
+const middleware = process.env.NODE_ENV === 'development' ? applyMiddleware(
   routerMiddleware(hashHistory),
   firebaseMiddleware,
   loggerMiddleware,
   thunkMiddleware
-))
+) : applyMiddleware(
+  routerMiddleware(hashHistory),
+  firebaseMiddleware,
+  thunkMiddleware
+)
+
+const store = createStore(combineReducers({
+  store: reducer,
+  routing: routerReducer
+}), middleware)
 
 firebase.authStateHanler = user => store.dispatch({
   type: SIGN_IN_SUCCESS,
   user
 })
+
+/**
+ * init SW
+ */
 
 function updateReady(worker) {
   store.dispatch(showPrompt('New version is ready', 'reload', () => {
@@ -103,34 +100,8 @@ if ((navigator as any).serviceWorker) {
   })
 }
 
-//firebase.onSignIn = user => {
-  /*if (firebase.currentUser)
-    firebase.list('/categories').then((categories: any[]) => {
-      const category = categories[0]
-      store.dispatch({
-        type: 'CREATE_ORDER',
-        [FIREBASE_DATABASE_ACTION]: {
-          path: '/orders',
-          method: 'push',
-          value: {
-            name: 'test order',
-            user: firebase.currentUser.uid,
-            category: category.id,
-            description: 'test order description',
-            active: true,
-            created: Firebase.database.ServerValue.TIMESTAMP
-          },
-          successType: 'ORDER_CREATE_SUCCESS',
-          errorType: 'ORDER_CREATED_ERROR',
-        }
-      })
-    })*/
-//}
-
 const routes = createRoutes(store)
 
 render(<Provider store={store}>
-  <MuiThemeProvider muiTheme={theme}>
-    {routes}
-  </MuiThemeProvider>
+  {routes}
 </Provider>, container)

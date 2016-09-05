@@ -6,11 +6,25 @@ import {push, goBack} from 'react-router-redux'
 import {User} from 'firebase'
 import {AppState, AppUi} from '../store.ts'
 import {hidePrompt} from '../actions/ui.ts'
+import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 
 import {showSidebar, hideSidebar} from '../actions/ui.ts'
-
 import Flex from '../components/Layout/Flex.tsx'
 import {Snackbar, Drawer, MenuItem} from 'material-ui'
+
+const theme = getMuiTheme({
+  palette: {
+    primary1Color: colors.amber500,
+    primary2Color: colors.amber500,
+    primary3Color: colors.amber500,
+    accent1Color: colors.deepOrangeA400,
+    accent2Color: colors.deepOrangeA400,
+    accent3Color: colors.deepOrangeA400
+  },
+  appBar: {
+    height: 56
+  }
+})
 
 function mapProps(state: { store: AppState }) {
   return {
@@ -50,26 +64,29 @@ class App extends Component<AppProps, {}> {
   render() {
     const {showSidebar, showPrompt, promptMessage, promptAction, promptHandler} = this.props
 
-    return <Flex>
-      <Drawer
-        open={showSidebar}
-        docked={false}
-        onRequestChange={open => this.toggleSidebar(open) }
-        >
-        <MenuItem onTouchTap={() => this.navigateTo('/settings')}>settings</MenuItem>
-        <MenuItem onTouchTap={() => location.reload()}>reload</MenuItem>
-      </Drawer>
+    return <MuiThemeProvider muiTheme={theme}>
 
-      {this.props.children}
+      <Flex>
+        <Drawer
+          open={showSidebar}
+          docked={false}
+          onRequestChange={open => this.toggleSidebar(open) }
+          >
+          <MenuItem onTouchTap={() => this.navigateTo('/settings') }>settings</MenuItem>
+          <MenuItem onTouchTap={() => location.reload() }>reload</MenuItem>
+        </Drawer>
 
-      <Snackbar
-        open={showPrompt}
-        message={promptMessage}
-        autoHideDuration={4000}
-        action={promptAction}
-        onActionTouchTap={() => promptHandler() }
-        onRequestClose={() => this.hidePrompt() }/>
-    </Flex>
+        {this.props.children}
+
+        <Snackbar
+          open={showPrompt}
+          message={promptMessage}
+          autoHideDuration={4000}
+          action={promptAction}
+          onActionTouchTap={() => promptHandler() }
+          onRequestClose={() => this.hidePrompt() }/>
+      </Flex>
+    </MuiThemeProvider>
   }
 }
 
