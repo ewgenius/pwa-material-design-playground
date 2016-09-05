@@ -20,6 +20,11 @@ gulp.task('assets', () => {
     .pipe(gulp.dest(`./dist/assets`))
 })
 
+gulp.task('sw', () => {
+  return gulp.src('./src/sw.js')
+    .pipe(gulp.dest(`./dist`))
+})
+
 gulp.task('webpack', cb => {
   webpack(webpackConfigProd, (err, stats) => {
     if (err) throw new util.PluginError('webpack', err)

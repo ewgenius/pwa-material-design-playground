@@ -10,9 +10,11 @@ import * as createLogger from 'redux-logger'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 import {FirebaseService, FIREBASE_DATABASE_ACTION, FIREBASE_AUTH_ACTION} from './lib/firebase.ts'
 import * as Firebase from 'firebase'
-import {SIGN_IN_SUCCESS} from './actions/auth.ts'
 import reducer from './store.ts'
 import './styles/main.scss'
+
+import {SIGN_IN_SUCCESS} from './actions/auth.ts'
+import {showPrompt} from './actions/ui.ts'
 
 import createRoutes from './routes.tsx'
 
@@ -57,6 +59,49 @@ firebase.authStateHanler = user => store.dispatch({
   type: SIGN_IN_SUCCESS,
   user
 })
+
+function updateReady(worker) {
+  store.dispatch(showPrompt('New version is ready', 'reload', () => {
+    worker.postMessage({ action: 'skipWaiting' })
+  }))
+}
+
+function trackInstalling(worker) {
+  worker.addEventListener('statechange', () => {
+    updateReady(worker)
+  })
+}
+
+if ((navigator as any).serviceWorker) {
+  const serviceWorker = (navigator as any).serviceWorker
+  serviceWorker.register('/sw.js')
+    .then(reg => {
+      if (!serviceWorker.controller) {
+        return
+      }
+
+      if (reg.waiting) {
+        updateReady(reg.waiting)
+        return
+      }
+
+      if (reg.installing) {
+        trackInstalling(reg.installing)
+        return
+      }
+
+      reg.addEventListener('updatefound', () => {
+        trackInstalling(reg.installing)
+      })
+    })
+
+  let refreshing = false
+  serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return
+    window.location.reload()
+    refreshing = true
+  })
+}
 
 //firebase.onSignIn = user => {
   /*if (firebase.currentUser)
