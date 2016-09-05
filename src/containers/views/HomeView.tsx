@@ -45,7 +45,7 @@ class HomeView extends Component<HomeViewProps, {}> {
           <CircularProgress />
         </Flex>
         :
-        <Scroller>
+        <Scroller vertical>
           {items.map((item, i) => <Card key={i} style={{margin: 8}}>
             <CardHeader title={item.item.name}/>
           </Card>) }

@@ -1,0 +1,28 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /home/ewgenius/.nvm/versions/node/v6.3.1/bin/node /home/ewgenius/.nvm/versions/node/v6.3.1/bin/firebase deploy
+[debug] CLI Version:  3.0.7
+[debug] Platform:     linux
+[debug] Node Version: v6.3.1
+[debug] Time:         Mon Sep 05 2016 15:15:48 GMT+0300 (MSK)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[debug] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase"]
+[debug] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/yopta-7b8c0 
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/yopta-7b8c0/tokens 
+[debug] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'yopta-7b8c0'...
+[info] 
+[info] i  deploying database, hosting
+[info] ✔  database: rules ready to deploy.
+[info] i  hosting: preparing dist directory for upload...
+[debug] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/yopta-7b8c0/uploads/-KQuGfSQhSIz2Rxd1YHc?fileCount=7&message= 
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  hosting: dist folder uploaded successfully
+[info] ✔  hosting: 7 files uploaded successfully
+[info] i  starting release process (may take several minutes)...
+[debug] >>> HTTP REQUEST POST https://deploy.firebase.com/v1/projects/yopta-7b8c0/releases
