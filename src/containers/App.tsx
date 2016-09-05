@@ -4,11 +4,10 @@ import {Dispatch} from 'redux'
 import {connect} from 'react-redux'
 import {push, goBack} from 'react-router-redux'
 import {User} from 'firebase'
-import {AppState, AppUi} from '../store.ts'
-import {hidePrompt} from '../actions/ui.ts'
 import {MuiThemeProvider, getMuiTheme, colors} from 'material-ui/styles'
 
-import {showSidebar, hideSidebar} from '../actions/ui.ts'
+import {AppState, AppUi} from '../store.ts'
+import {hidePrompt, showSidebar, hideSidebar} from '../actions/ui.ts'
 import Flex from '../components/Layout/Flex.tsx'
 import {Snackbar, Drawer, MenuItem} from 'material-ui'
 
