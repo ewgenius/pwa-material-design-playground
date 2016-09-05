@@ -35,8 +35,8 @@ declare const process: any
 const middleware = process.env.NODE_ENV === 'development' ? applyMiddleware(
   routerMiddleware(hashHistory),
   firebaseMiddleware,
-  loggerMiddleware,
-  thunkMiddleware
+  thunkMiddleware,
+  loggerMiddleware
 ) : applyMiddleware(
   routerMiddleware(hashHistory),
   firebaseMiddleware,

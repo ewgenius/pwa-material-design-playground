@@ -121,10 +121,10 @@ export class FirebaseService {
     return this._firebase.auth().signOut()
   }
 
-  list(path: string, limit: number = 10) {
+  list(path: string, limit: number = 20) {
     return this._database
       .ref(path)
-      .orderByKey()
+      .orderByChild('-created')
       .limitToLast(limit)
       .once('value')
       .then(result => {

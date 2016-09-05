@@ -6,31 +6,10 @@
         ".write": "$user_id === auth.uid"
       }
     },
-    "categories": {
-      ".read": true,
-      ".write": false
-    },
-    "services": {
-      ".read": true,
-      ".write": false,
-      
-      "$service_id": {
-        ".read": "data.child('active').val() === true || data.child('user').val() === auth.uid",
-        ".write": "!data.exists() || data.exists() && data.child('user').val() === auth.uid",
-
-        ".indexOn": ["name", "user", "category"],
-
-        "user": { ".validate": "newData.val() === auth.uid" },
-        "name": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
-        "description": { ".validate": "newData.isString()" },
-        "active": { ".validate": "newData.isBoolean()" },
-        "created": { ".validate": "newData.val() <= now" }
-      }
-    },
     
     "orders": {
       ".read": true,
-      ".write": false,
+      ".write": "auth !== null",
       
       "$order_id": {
         ".read": "data.child('active').val() === true || data.child('user').val() === auth.uid",
@@ -46,17 +25,28 @@
       }
     },
 
+    "responses": {
+      "$order_id":{
+        ".validate": "root.child('orders/' + $order_id).exists()",
+
+        "$response_id": {
+          "created": { ".validate": "!data.exists() && newData.val() <= now" }          
+        }
+      }
+    },
+
     "comments": {
-      ".read": true,
-      ".write": false,
+      "$response_id":{
+        ".validate": "root.child('responses/' + $response_id).exists()",
 
-      "$comment_id": {
-        ".read": true,
-        ".write": true,
+        "$comment_id": {
+          ".read": true,
+          ".write": true,
 
-        "user": { ".validate": "newData.val() === auth.uid" },
-        "message": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
-        "created": { ".validate": "!data.exists() && newData.val() <= now" }
+          "user": { ".validate": "newData.val() === auth.uid" },
+          "message": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length < 50" },
+          "created": { ".validate": "!data.exists() && newData.val() <= now" }
+        }
       }
     }
   }

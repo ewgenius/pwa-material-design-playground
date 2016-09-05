@@ -6,7 +6,8 @@ import {connect} from 'react-redux'
 import {AppState} from '../../store.ts'
 import {push} from 'react-router-redux'
 import {showSidebar} from '../../actions/ui.ts'
-import {requestOrders} from '../../actions/orders.ts'
+import {requestOrders, createOrder} from '../../actions/orders.ts'
+import * as Firebase from 'firebase'
 
 import {AppBar, FloatingActionButton, CircularProgress, Card, CardHeader, CardText} from 'material-ui'
 import ContentAdd from 'material-ui/svg-icons/content/add'
@@ -32,6 +33,14 @@ class HomeView extends Component<HomeViewProps, {}> {
     this.props.dispatch(requestOrders())
   }
 
+  addOrder() {
+    this.props.dispatch(createOrder({
+      name: 'test',
+      created: Firebase.database.ServerValue.TIMESTAMP
+    }))
+      .then(() => this.props.dispatch(requestOrders()))
+  }
+
   render() {
     const {loading, items} = this.props
 
@@ -46,12 +55,15 @@ class HomeView extends Component<HomeViewProps, {}> {
         </Flex>
         :
         <Scroller vertical>
-          {items.map((item, i) => <Card key={i} style={{margin: 8}}>
+          {items.map((item, i) => <Card key={i} style={{ margin: 8 }}>
             <CardHeader title={item.item.name}/>
+            <CardText>
+              {new Date(item.item.created).toString()}
+            </CardText>
           </Card>) }
         </Scroller>}
 
-      <FloatingActionButton onTouchTap={() => this.props.dispatch(push('/login')) }
+      <FloatingActionButton onTouchTap={() => this.addOrder() }
         secondary={true}
         style={{
           position: 'fixed',
