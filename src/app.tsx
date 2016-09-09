@@ -24,8 +24,8 @@ const container = document.querySelector('#root')
 const firebase = new FirebaseService({
   apiKey: "AIzaSyDITQSs7-VAgODZc9EwCP02MJnLIjQzgy4",
   authDomain: "pwa-app-7b8c0.firebaseapp.com",
-  databaseURL: "https://pwa-app-7b8c0.firebaseio.com",
-  storageBucket: "pwa-app-7b8c0.appspot.com",
+  databaseURL: "https://yopta-7b8c0.firebaseio.com",
+  storageBucket: "yopta-7b8c0.appspot.com",
 })
 
 const loggerMiddleware = createLogger({ collapsed: true })

@@ -71,6 +71,7 @@ class App extends Component<AppProps, {}> {
           docked={false}
           onRequestChange={open => this.toggleSidebar(open) }
           >
+          <MenuItem onTouchTap={() => this.navigateTo('/') }>home</MenuItem>
           <MenuItem onTouchTap={() => this.navigateTo('/settings') }>settings</MenuItem>
           <MenuItem onTouchTap={() => location.reload() }>reload</MenuItem>
         </Drawer>
