@@ -44,7 +44,7 @@ class HomeView extends Component<HomeViewProps, {}> {
   render() {
     const {loading, items} = this.props
 
-    const appBar = <AppBar onLeftIconButtonTouchTap={() => this.props.dispatch(showSidebar()) } title='yopta'/>
+    const appBar = <AppBar onLeftIconButtonTouchTap={() => this.props.dispatch(showSidebar()) } title='pwa-app'/>
 
     return <HeaderLayout
       appBar={appBar}>

@@ -7,7 +7,7 @@ import Scroller from '../components/Layout/Scroller.tsx'
 export default class App extends Component<{}, {}> {
   render() {
     return <Flex className='app'>
-      <AppBar title='Yopta'/>
+      <AppBar title='pwa-app'/>
       <Flex flow='column'>
         <Scroller vertical>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i =>
